@@ -1,58 +1,52 @@
 const Card = require('../models/card');
-const {
-  SERVER_ERROR,
-  NOT_FOUND,
-  BAD_REQUEST,
-} = require('../errors');
 
-module.exports.getCards = (req, res) => {
+const BadRequestError = require('../errors/BadRequestError');
+const NotFoundError = require('../errors/NotFoundError');
+const ForbiddenError = require('../errors/ForbiddenError');
+
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch(() => {
-      res
-        .status(SERVER_ERROR)
-        .send({ message: 'Ошибка сервера. Попробуйте позже.' });
-    });
+    .catch(next);
 };
 
-module.exports.addCard = (req, res) => {
+module.exports.addCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res
-          .status(BAD_REQUEST)
-          .send({ message: 'Неверные данные для создания карточки' });
-        return;
+        next(new BadRequestError('Неверные данные для создания карточки.'));
       }
-      res
-        .status(SERVER_ERROR)
-        .send({ message: 'Ошибка сервера. Попробуйте позже.' });
+      next();
     });
 };
 
-module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
+module.exports.deleteCard = (req, res, next) => {
+  Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
-        res.status(NOT_FOUND).send({ message: 'Карточка не найдена.' });
+        next(new NotFoundError('Карточка не найдена.'));
         return;
       }
-      res.send({ card });
+      if (card.owner._id.toString() !== req.user._id.toString()) {
+        next(new ForbiddenError('Вы можете удалять только свои публикации.'));
+      } else {
+        card.remove()
+          .then(() => res.send({ data: card }))
+          .catch(next);
+      }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({ message: 'Данные некорректны.' });
-        return;
+        next(new BadRequestError('Данные некорректны'));
+      } else {
+        next();
       }
-      res
-        .status(SERVER_ERROR)
-        .send({ message: 'Ошибка сервера. Попробуйте позже.' });
     });
 };
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
@@ -60,23 +54,21 @@ module.exports.likeCard = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(NOT_FOUND).send({ message: 'Карточка не найдена.' });
-        return;
+        next(new NotFoundError('Карточка не найдена.'));
+      } else {
+        res.send({ card });
       }
-      res.send({ card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({ message: 'Данные некорректны.' });
-        return;
+        next(new BadRequestError('Данные некорректны.'));
+      } else {
+        next();
       }
-      res
-        .status(SERVER_ERROR)
-        .send({ message: 'Ошибка сервера. Попробуйте позже.' });
     });
 };
 
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
@@ -84,18 +76,16 @@ module.exports.dislikeCard = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(NOT_FOUND).send({ message: 'Карточка не найдена.' });
-        return;
+        next(new NotFoundError('Карточка не найдена.'));
+      } else {
+        res.send({ card });
       }
-      res.send({ card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({ message: 'Данные некорректны.' });
-        return;
+        next(new BadRequestError('Данные некорректны.'));
+      } else {
+        next();
       }
-      res
-        .status(SERVER_ERROR)
-        .send({ message: 'Ошибка сервера. Попробуйте позже.' });
     });
 };
