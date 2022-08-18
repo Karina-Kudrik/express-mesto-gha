@@ -4,12 +4,6 @@ const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
 
-module.exports.getCards = (req, res, next) => {
-  Card.find({})
-    .then((cards) => res.send({ data: cards }))
-    .catch(next);
-};
-
 module.exports.addCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
@@ -17,9 +11,16 @@ module.exports.addCard = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Неверные данные для создания карточки.'));
+      } else {
+        next(err);
       }
-      next();
     });
+};
+
+module.exports.getCards = (req, res, next) => {
+  Card.find({})
+    .then((cards) => res.send({ data: cards }))
+    .catch(next);
 };
 
 module.exports.deleteCard = (req, res, next) => {

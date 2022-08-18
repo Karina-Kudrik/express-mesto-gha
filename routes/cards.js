@@ -7,14 +7,15 @@ const {
   likeCard,
   dislikeCard,
 } = require('../controllers/cards');
+const { regex } = require('../models/regex');
 
-router.get('/', getCards);
 router.post('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().regex(/^(https?:\/\/)?([\da-z.-]+).([a-z.]{2,6})([/\w.-]*)*\/?$/),
+    link: Joi.string().required().regex(regex),
   }),
 }), addCard);
+router.get('/', getCards);
 router.delete('/:cardId', celebrate({
   params: Joi.object().keys({
     cardId: Joi.string().alphanum().length(24).hex(),

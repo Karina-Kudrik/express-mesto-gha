@@ -2,12 +2,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi, errors } = require('celebrate');
-const { login, createUser } = require('./controllers/users');
-const auth = require('./middlewares/auth');
+const { createUser, login } = require('./controllers/users');
 const routesUsers = require('./routes/users');
 const routesCards = require('./routes/cards');
+const auth = require('./middlewares/auth');
 const NotFoundError = require('./errors/NotFoundError');
 const { handleErrors } = require('./errors/handleErrors');
+const { regex } = require('./models/regex');
 
 const app = express();
 const { PORT = 3000 } = process.env;
@@ -18,26 +19,27 @@ mongoose.connect('mongodb://localhost:27017/mestodb')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), login);
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().regex(/^(https?:\/\/)?([\da-z.-]+).([a-z.]{2,6})([/\w.-]*)*\/?$/),
+    avatar: Joi.string().regex(regex),
   }),
 }), createUser);
 
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), login);
+
 app.use(auth);
 
-app.use('/users', routesUsers);
 app.use('/cards', routesCards);
+app.use('/users', routesUsers);
 
 app.use((req, res, next) => {
   next(new NotFoundError('Страница не найдена'));
