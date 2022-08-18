@@ -36,9 +36,7 @@ module.exports.createUser = async (req, res, next) => {
       email: user.email,
     });
   } catch (err) {
-    if (err.code === 11000) {
-      next(new ConflictingError('Пользователь с таким email уже существует.'));
-    } else if (err.name === 'ValidationError') {
+    if (err.name === 'ValidationError') {
       next(new BadRequestError('Неверные данные для создания пользователя.'));
     } else {
       next(err);
