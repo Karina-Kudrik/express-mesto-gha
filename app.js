@@ -2,8 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi, errors } = require('celebrate');
-const cors = require('cors');
-const { allowedCors } = require('./middlewares/allowedCors');
 const { createUser, login } = require('./controllers/users');
 const routesUsers = require('./routes/users');
 const routesCards = require('./routes/cards');
@@ -22,7 +20,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cors(allowedCors));
 app.use(requestLogger);
 
 app.post('/signup', celebrate({
