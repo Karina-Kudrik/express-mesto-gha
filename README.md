@@ -1,33 +1,38 @@
 [![Tests](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-13-sprint.yml) [![Tests](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-14-sprint.yml)
-# Проект Mesto фронтенд + бэкенд
+# Бэкенд для проекта Mesto
 
+## Функционал:
+* Регистрация
+* Авторизация
+* Обновление данных пользователя
+* Обновление аватара
+* Получение списка пользователя
+* Получение пользователя по ID
+* Получение информации о текущем пользователе
+* Получение списка карточек
+* Создание карточки
+* Удаление карточки
+* Постановка лайка
+* Снятие лайка
+* Центральная обработка ошибок
+* Валидация входящих данных
 
-
-## Настройка бейджей статуса тестов
-Перед началом работы над проектом рекомендуется исправить бейджи, отражающие статус прохождения тестов.
-Для этого замените разметку бейджей на следующий фрагмент, подставив вместо `${имя_пользователя}` и `${имя_репозитория}` соответствующие значения.
-
-```
-[![Tests for sprint 13](https://github.com/${Karina-Kudrik}/${express-mesto-gha}/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/${Karina-Kudrik}/${express-mesto-gha}/actions/workflows/tests-13-sprint.yml) 
-
-[![Tests for sprint 14](https://github.com/${Karina-Kudrik}/${express-mesto-gha}/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/${Karina-Kudrik}/${express-mesto-gha}/actions/workflows/tests-14-sprint.yml)
-```
 ## Технологии
-Express
-MongoDB
-Mongoose
+* Express
+* MongoDB
+* Mongoose
+* NodeJS
 
 ## Директории
-
 `/routes` — папка с файлами роутера  
 `/controllers` — папка с файлами контроллеров пользователя и карточки   
 `/models` — папка с файлами описания схем пользователя и карточки  
-  
-Остальные директории вспомогательные, создаются при необходимости разработчиком
 
 ## Запуск проекта
+`git clone https://karina-kudrik.github.io/express-mesto-gha.git` - клонирование репозитория
 
-`npm run start` — запускает сервер   
+`npm install`- установка зависимостей
+
+`npm run start` - запуск сервера
+
 `npm run dev` — запускает сервер с hot-reload
-
-https://karina-kudrik.github.io/express-mesto-gha/
