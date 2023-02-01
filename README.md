@@ -1,5 +1,6 @@
 [![Tests](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-13-sprint.yml) [![Tests](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-14-sprint.yml)
 # Бэкенд для проекта Mesto
+Mesto — это веб-сервис, с помощью которого пользователи могут обмениваться фотографиями и оценивать фотографии других людей. 
 
 ## Функционал:
 * Регистрация
